@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import icons from './global/registerIcons'
+import icons from '@/global/registerIcons'
 import App from './App.vue'
 
 const app = createApp(App)

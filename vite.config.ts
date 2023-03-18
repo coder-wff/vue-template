@@ -7,10 +7,18 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 // 配置 element-plus 特殊组件自动导入样式
 import { createStyleImportPlugin, ElementPlusResolve } from 'vite-plugin-style-import'
 
+import { resolve } from 'path'
+
 export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
 	console.log('mode', mode)
 
 	return {
+		base: './',
+		resolve: {
+			alias: {
+				'@': resolve(__dirname, './src')
+			}
+		},
 		plugins: [
 			vue(),
 			// element-plus 按需导入
