@@ -9,7 +9,8 @@ import { loginApi } from '@/api/modules/login'
 import md5 from 'js-md5'
 
 const globalStore = useGlobalStore()
-
+const num = ref(1)
+console.log(num.value)
 const token = globalStore.token
 console.log('token', token)
 

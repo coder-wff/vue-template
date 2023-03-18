@@ -15,7 +15,6 @@ import { resolve } from 'path'
 
 export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
 	console.log('mode', mode)
-	console.log('vueSetupExtend', vueSetupExtend)
 
 	return {
 		base: './',
@@ -44,7 +43,8 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
 			vue(),
 			// element-plus 按需导入
 			AutoImport({
-				resolvers: [ElementPlusResolver()]
+				resolvers: [ElementPlusResolver()],
+				imports: ['vue', 'vue-router', 'pinia']
 			}),
 			Components({
 				resolvers: [ElementPlusResolver()]
