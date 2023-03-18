@@ -1,4 +1,4 @@
-import { ConfigEnv, defineConfig, UserConfig } from 'vite'
+import { ConfigEnv, defineConfig, loadEnv, UserConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 // 配置 element-plus 按需导入
 import AutoImport from 'unplugin-auto-import/vite'
@@ -12,9 +12,14 @@ import eslintPlugin from 'vite-plugin-eslint'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 
 import { resolve } from 'path'
+import { wrapperEnv } from './src/utils/getEnv'
+
+import { visualizer } from 'rollup-plugin-visualizer'
+import viteCompression from 'vite-plugin-compression'
 
 export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
-	console.log('mode', mode)
+	const env = loadEnv(mode, process.cwd())
+	const viteEnv = wrapperEnv(env)
 
 	return {
 		base: './',
@@ -26,8 +31,8 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
 		server: {
 			// 服务器主机名，如果允许外部访问，可设置为 "0.0.0.0"
 			host: '0.0.0.0',
-			port: 5173,
-			open: true,
+			port: viteEnv.VITE_PORT,
+			open: viteEnv.VITE_OPEN,
 			cors: true,
 			// 跨域代理配置
 			proxy: {
@@ -67,7 +72,43 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
 			// * name 可以写在 script 标签上
 			vueSetupExtend(),
 			// * vite 可以使用 jsx/tsx 语法
-			vueJsx()
-		]
+			vueJsx(),
+			// * 是否生成包预览(分析依赖包大小,方便做优化处理)
+			viteEnv.VITE_REPORT && visualizer(),
+			// * gzip compress
+			viteEnv.VITE_BUILD_GZIP &&
+				viteCompression({
+					verbose: true,
+					disable: false,
+					threshold: 10240,
+					algorithm: 'gzip',
+					ext: '.gz'
+				})
+		],
+		// * 打包去除 console.log && debugger
+		esbuild: {
+			pure: viteEnv.VITE_DROP_CONSOLE ? ['console.log', 'debugger'] : []
+		},
+		build: {
+			outDir: 'dist',
+			minify: 'esbuild',
+			// esbuild 打包更快，但是不能去除 console.log，terser打包慢，但能去除 console.log
+			// minify: "terser",
+			// terserOptions: {
+			// 	compress: {
+			// 		drop_console: viteEnv.VITE_DROP_CONSOLE,
+			// 		drop_debugger: true
+			// 	}
+			// },
+			chunkSizeWarningLimit: 1500,
+			rollupOptions: {
+				output: {
+					// Static resource classification and packaging
+					chunkFileNames: 'assets/js/[name]-[hash].js',
+					entryFileNames: 'assets/js/[name]-[hash].js',
+					assetFileNames: 'assets/[ext]/[name]-[hash].[ext]'
+				}
+			}
+		}
 	}
 })
