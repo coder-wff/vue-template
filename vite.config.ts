@@ -7,10 +7,15 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 // 配置 element-plus 特殊组件自动导入样式
 import { createStyleImportPlugin, ElementPlusResolve } from 'vite-plugin-style-import'
 
+import vueSetupExtend from 'vite-plugin-vue-setup-extend'
+import eslintPlugin from 'vite-plugin-eslint'
+import vueJsx from '@vitejs/plugin-vue-jsx'
+
 import { resolve } from 'path'
 
 export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
 	console.log('mode', mode)
+	console.log('vueSetupExtend', vueSetupExtend)
 
 	return {
 		base: './',
@@ -40,7 +45,13 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
 						}
 					}
 				]
-			})
+			}),
+			// * EsLint 报错信息显示在浏览器界面上
+			eslintPlugin(),
+			// * name 可以写在 script 标签上
+			vueSetupExtend(),
+			// * vite 可以使用 jsx/tsx 语法
+			vueJsx()
 		]
 	}
 })
