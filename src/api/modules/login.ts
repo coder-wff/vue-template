@@ -14,3 +14,17 @@ export const loginApi = (params: Login.ReqLoginForm) => {
 	// return http.post<Login.ResLogin>(`/login`, qs.stringify(params)) // post 请求携带表单参数  ==>  application/x-www-form-urlencoded
 	// return http.get<Login.ResLogin>(`/login?${qs.stringify(params, { arrayFormat: 'repeat' })}`) // 如果是 get 请求可以携带数组等复杂参数
 }
+
+// * 获取按钮权限
+export const getAuthButtonListApi = () => {
+	return http.get<Login.ResAuthButtons>(`/auth/buttons`, {}, { headers: { noLoading: true } })
+	// 如果想让按钮权限变为本地数据，注释上一行代码，并引入本地 authButtons.json 数据
+	// return AuthButtons
+}
+
+// * 获取菜单列表
+export const getAuthMenuListApi = () => {
+	return http.get<Menu.MenuOptions[]>(`/menu/list`, {}, { headers: { noLoading: true } })
+	// 如果想让菜单变为本地数据，注释上一行代码，并引入本地 dynamicRouter.json 数据
+	// return DynamicRouter
+}

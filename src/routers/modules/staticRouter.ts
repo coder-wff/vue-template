@@ -18,9 +18,11 @@ export const staticRouter: RouteRecordRaw[] = [
 		}
 	},
 	{
-		path: '/home/index',
-		name: 'home',
-		component: () => import('@/views/home/index.vue')
+		path: '/layout',
+		name: 'layout',
+		component: () => import('@/layouts/index.vue'),
+		redirect: HOME_URL,
+		children: []
 	}
 ]
 
