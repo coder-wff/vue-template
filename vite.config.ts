@@ -28,6 +28,15 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
 				'@': resolve(__dirname, './src')
 			}
 		},
+		css: {
+			// 指定传递给 CSS 预处理器的选项。文件扩展名用作选项的键。每个预处理器支持的选项可以在它们各自的文档中找到：
+			preprocessorOptions: {
+				scss: {
+					// 所有预处理器选项还支持 additionalData 选项，可以用于为每个样式内容注入额外代码。
+					additionalData: `@import "@/styles/var.scss";`
+				}
+			}
+		},
 		server: {
 			// 服务器主机名，如果允许外部访问，可设置为 "0.0.0.0"
 			host: '0.0.0.0',
